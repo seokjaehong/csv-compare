@@ -18,7 +18,10 @@ def _diff_and_summarize(from_csv, to_csv, index_columns,
     if orig_size == 0:
         orig_size = 1
 
-    return len(diff['removed']), len(diff['added']), len(diff['changed']), orig_size if orig_size == 0 else 1, user_size
+    n_removed = len(diff['removed'])
+    n_added = len(diff['added'])
+    n_changed = len(diff['changed'])
+    return n_removed, n_added, n_changed, orig_size, user_size
 
 
 if __name__ == '__main__':
@@ -32,6 +35,7 @@ if __name__ == '__main__':
     diff_count = n_removed + n_added + n_changed
     score = 100 - 100 * (diff_count / orig_size)
     if n_removed or n_added or n_changed:
+
         print('{0}의 채점결과입니다.'.format(user_file))
 
         print('----------------ROW 기준 내용------------------')
@@ -43,6 +47,7 @@ if __name__ == '__main__':
         # print('----------------DATA 기준 내용------------------')
     print('{0}점입니다'.format(round(score, 2)))
 
+
     # record = csvdiff.diff_files(file_a, user_file, ['PassengerId'], sep=',')
     # print(record)
 
@@ -50,3 +55,4 @@ if __name__ == '__main__':
     # diff_col_cnt = len([x['key'] for x in changed_data])
     # diff_data_cnt = sum([len(value['fields']) for value in changed_data])
     # print('{0}개의 데이터에서 다른점이 발견되었습니다'.format(diff_data_cnt))
+
