@@ -17,6 +17,6 @@ def submission_list(request):
             return HttpResponseRedirect(reverse('submission_list'))
     else:
         form = SubmissionForm()
-    submissions = Submission.objects.all()
+    submissions = Submission.objects.all().order_by("-id")[:1]
 
     return render(request, 'cjudge/list.html', {'submissions': submissions, 'form': form})

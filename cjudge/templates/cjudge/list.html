@@ -14,18 +14,21 @@
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
     <title>Minimal Django File Upload Example</title>
+    <style> body{ margin-left: 50px;} </style>
 </head>
 <body>
-<!-- List of uploaded documents -->
-{% if submissions %}
-<ul>
-    {% for submission in submissions %}
-    <li><a href="{{ submission.docfile.url }}">{{ submission.docfile }}</a></li>
-    {% endfor %}
-</ul>
-{% else %}
-<p>No submissions.</p>
-{% endif %}
+ <h1> CSV FILE 채점하기 </h1>
+    채점할 파일입니다. :
+    {% if submissions %}
+        <ul>
+            {% for submission in submissions %}
+
+            <li><a href="{{ submission.docfile.url }}">{{ submission.docfile }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No submissions.</p>
+    {% endif %}
 
 <form action="{% url 'submission_list' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -35,7 +38,8 @@
         {{ form.docfile.errors }}
         {{ form.docfile }}
     </p>
-    <p><input type="submit" value="Upload"/></p>
+    <p><input type="submit" value="파일 업로드"/>
+    </p>
 </form>
 </body>
 </html>
