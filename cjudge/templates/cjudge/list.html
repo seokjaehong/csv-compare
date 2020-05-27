@@ -14,32 +14,48 @@
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
     <title>Minimal Django File Upload Example</title>
-    <style> body{ margin-left: 50px;} </style>
+    <style> body {
+        margin-left: 50px;
+    } </style>
 </head>
 <body>
- <h1> CSV FILE 채점하기 </h1>
-    채점할 파일입니다. :
-    {% if submissions %}
-        <ul>
-            {% for submission in submissions %}
 
-            <li><a href="{{ submission.docfile.url }}">{{ submission.docfile }}</a></li>
-            {% endfor %}
-        </ul>
+<div>
+    <h1> CSV FILE 채점하기 </h1>
+</div>
+<div>
+    <form action="{% url 'submission_list' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>{{ form.non_field_errors }}</p>
+        <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
+        <p>
+            {{ form.docfile.errors }}
+            {{ form.docfile }}
+        </p>
+        <p><input type="submit" value="채점하기"/>
+        </p>
+    </form>
+</div>
+<div>
+    <hr>
+</div>
+<div>
+    {% if submission %}
+    당신의 채점정보입니다.
+    <ul>
+        <li> {{submission.docfile}}</li>
+        <li> {{submission.score}} 점 입니다.</li>
+
+        <li> {{result.file_size}} KB </li>
+        <li> 채점시간(s): {{result.duration}} </li>
+        <li> 제거된 row 수 : {{result.n_removed}}</li>
+        <li> 추가된 row 수 : {{result.n_added}}</li>
+        <li> 변경된 row 수 : {{result.n_changed}}</li>
+
+    </ul>
     {% else %}
-        <p>No submissions.</p>
+    <p>No submissions.</p>
     {% endif %}
-
-<form action="{% url 'submission_list' %}" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <p>{{ form.non_field_errors }}</p>
-    <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
-    <p>
-        {{ form.docfile.errors }}
-        {{ form.docfile }}
-    </p>
-    <p><input type="submit" value="파일 업로드"/>
-    </p>
-</form>
+</div>
 </body>
 </html>

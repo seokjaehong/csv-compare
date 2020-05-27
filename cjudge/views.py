@@ -1,22 +1,30 @@
 from django.shortcuts import render
 
-# Create your views here.
-from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
-
 from cjudge.forms import SubmissionForm
 from cjudge.models import Submission
+from cjudge.utils import calculate_csv
 
 
 def submission_list(request):
     if request.method == 'POST':
         form = SubmissionForm(request.POST, request.FILES)
         if form.is_valid():
-            newdoc = Submission(docfile=request.FILES['docfile'])
-            newdoc.save()
-            return HttpResponseRedirect(reverse('submission_list'))
+            doc_file = request.FILES['docfile']
+            submission = Submission.objects.create(
+                docfile=doc_file
+            )
+
+            form = SubmissionForm()
+            _state, result = calculate_csv(submission)
+            if _state:
+                submission.score = result['score']
+                submission.save()
+
+            return render(request, 'cjudge/list.html', {
+                'submission': submission,
+                'form': form,
+                'result': result,
+            })
     else:
         form = SubmissionForm()
-    submissions = Submission.objects.all().order_by("-id")[:1]
-
-    return render(request, 'cjudge/list.html', {'submissions': submissions, 'form': form})
+        return render(request, 'cjudge/list.html', {'form': form})
